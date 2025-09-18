@@ -1,0 +1,102 @@
+*Txt of the code*
+
+
+
+using System;
+
+public class Decoder
+{
+    public static string OldPhonePad(string input)
+    {
+        string output = "";
+        char currentKey = '\0';
+        int count = 0;
+
+        for (int i = 0; i < input.Length; i++)
+        {
+            char c = input[i];
+
+            if (c == '#') // Send key
+            {
+                if (count > 0)
+                {
+                    output += GetCharFromKey(currentKey, count);
+                }
+                break;
+            }
+            else if (c == ' ') // Pause key
+            {
+                if (count > 0)
+                {
+                    output += GetCharFromKey(currentKey, count);
+                    count = 0;
+                    currentKey = '\0';
+                }
+            }
+           else if (c == '*') // Backspace key
+            {
+                if (count > 0)
+                {
+                    output += GetCharFromKey(currentKey, count);
+                    count = 0;
+                    currentKey = '\0';
+                }
+
+                if (output.Length > 0)
+                output = output.Substring(0, output.Length - 1);
+            }
+            else if (char.IsDigit(c))
+            {
+                if (c == currentKey)
+                {
+                    count++;
+                }
+                else
+                {
+                    if (count > 0)
+                    {
+                        output += GetCharFromKey(currentKey, count);
+                    }
+                    currentKey = c;
+                    count = 1;
+                }
+            }
+        }
+
+        return output;
+    }
+
+    private static char GetCharFromKey(char key, int count)
+    {
+        string letters = "";
+        switch (key)
+        {
+            case '2': letters = "ABC"; break;
+            case '3': letters = "DEF"; break;
+            case '4': letters = "GHI"; break;
+            case '5': letters = "JKL"; break;
+            case '6': letters = "MNO"; break;
+            case '7': letters = "PQRS"; break;
+            case '8': letters = "TUV"; break;
+            case '9': letters = "WXYZ"; break;
+            case '0': letters = " "; break;
+            default: letters = ""; break;
+        }
+
+        if (letters == "") return '\0';
+
+        int index = (count - 1) % letters.Length;
+        return letters[index];
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine(Decoder.OldPhonePad("83377778#"));          // test
+        Console.WriteLine(Decoder.OldPhonePad("444777666 66073 333#")); // Iron PDF
+        Console.WriteLine(Decoder.OldPhonePad("4433555 555666#"));    // HELLO
+        
+    }
+}
